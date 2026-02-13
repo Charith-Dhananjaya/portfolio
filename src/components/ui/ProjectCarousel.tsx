@@ -40,6 +40,8 @@ export default function ProjectCarousel({ projects, onCardClick }: ProjectCarous
         let opacity = 1;
         let zIndex = 50;
         let blur = 0;
+        let boxShadow = "0 10px 40px rgba(0, 0, 0, 0.15)";
+        let borderColor = "var(--color-glass-border)";
 
         switch (offset) {
             case 0: // Center (active)
@@ -48,6 +50,9 @@ export default function ProjectCarousel({ projects, onCardClick }: ProjectCarous
                 opacity = 1;
                 zIndex = 50;
                 blur = 0;
+                // Neon glow effect
+                boxShadow = "0 0 20px rgba(0, 136, 255, 0.4), 0 0 60px rgba(0, 136, 255, 0.2)";
+                borderColor = "rgba(0, 136, 255, 0.6)";
                 break;
             case 1: // Right adjacent
                 translateX = 45;
@@ -90,6 +95,8 @@ export default function ProjectCarousel({ projects, onCardClick }: ProjectCarous
             opacity: opacity,
             zIndex: zIndex,
             filter: blur > 0 ? `blur(${blur}px)` : 'none',
+            boxShadow: boxShadow,
+            borderColor: borderColor,
             pointerEvents: offset === 0 ? 'auto' : 'none',
         };
     };

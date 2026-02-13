@@ -12,20 +12,20 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-    const [theme, setTheme] = useState<Theme>("dark");
+    const [theme, setTheme] = useState<Theme>("light");
+    const [mounted, setMounted] = useState(false);
 
     // Load theme from localStorage on mount
     useEffect(() => {
+        setMounted(true);
         const savedTheme = localStorage.getItem("portfolio-theme") as Theme;
         if (savedTheme) {
             setTheme(savedTheme);
             document.documentElement.setAttribute("data-theme", savedTheme);
         } else {
-            // Default to system preference
-            const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-            const initialTheme = prefersDark ? "dark" : "light";
-            setTheme(initialTheme);
-            document.documentElement.setAttribute("data-theme", initialTheme);
+            // Default to light
+            setTheme("light");
+            document.documentElement.setAttribute("data-theme", "light");
         }
     }, []);
 
