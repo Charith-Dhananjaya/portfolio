@@ -1,0 +1,84 @@
+.skills {
+    position: relative;
+}
+
+.categoryGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+}
+
+.categoryTitle {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-text-heading);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.categoryTitle::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--color-glass-border);
+}
+
+.skillGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 16px;
+}
+
+.skillBadge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 20px 12px;
+    border-radius: var(--radius);
+    background: var(--color-card);
+    border: 1px solid var(--color-glass-border);
+    transition: all var(--transition);
+    cursor: default;
+}
+
+.skillBadge:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-glow);
+    background: rgba(0, 136, 255, 0.08);
+}
+
+.skillIcon {
+    font-size: 2rem;
+    /* Icons from react-icons/si will use their brand colors */
+    transition: transform var(--transition);
+}
+
+.skillBadge:hover .skillIcon {
+    transform: scale(1.1);
+}
+
+.skillName {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-align: center;
+}
+
+.skillBadge:hover .skillName {
+    color: var(--color-text);
+}
+
+@media (max-width: 600px) {
+    .skillGrid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 12px;
+    }
+
+    .skillBadge {
+        padding: 14px 8px;
+    }
+}
