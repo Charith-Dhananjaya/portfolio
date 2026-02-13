@@ -41,7 +41,12 @@ export default function Skills() {
                                                 className={styles.skillBadge}
                                                 style={{ animationDelay: `${i * 50}ms` }}
                                             >
-                                                {Icon && <Icon className={styles.skillIcon} />}
+                                                {Icon && (
+                                                    <Icon
+                                                        className={styles.skillIcon}
+                                                        style={{ color: skill.color }}
+                                                    />
+                                                )}
                                                 <span className={styles.skillName}>{skill.name}</span>
                                             </div>
                                         );
