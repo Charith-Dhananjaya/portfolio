@@ -16,14 +16,21 @@ export default function About() {
                     {/* Left — Image */}
                     <AnimateOnScroll variant="slide-right">
                         <div className={styles.imageCol}>
-                            <div className={styles.imageWrapper}>
-                                <Image
-                                    src="/profile.jpg"
-                                    alt="Charith Dhananjaya De Mel"
-                                    fill
-                                    className={styles.profileImg}
-                                    style={{ objectFit: 'cover' }}
-                                />
+                            <div className={styles.imageContainer}>
+                                <div className={styles.decorativeBox}></div>
+                                <div className={styles.imageWrapper}>
+                                    <span className={styles.line1}></span>
+                                    <span className={styles.line2}></span>
+                                    <span className={styles.line3}></span>
+                                    <span className={styles.line4}></span>
+                                    <Image
+                                        src="/profile.jpg"
+                                        alt="Charith Dhananjaya De Mel"
+                                        fill
+                                        className={styles.profileImg}
+                                        style={{ objectFit: 'cover' }}
+                                    />
+                                </div>
                             </div>
                         </div>
                     </AnimateOnScroll>
