@@ -17,26 +17,27 @@
 
 .imageWrapper {
     position: relative;
-    width: 400px;
-    height: 400px;
+    width: 380px;
+    height: 520px;
     background: linear-gradient(135deg, rgba(200, 210, 235, 0.2), rgba(235, 210, 230, 0.2));
     border-radius: var(--radius-xl);
     padding: 24px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    margin-left: -40px;
-    margin-top: -30px;
+    margin-left: -80px;
+    margin-top: -60px;
 }
 
 .imageWrapper::before {
     content: "";
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: -40px;
+    right: -40px;
     width: 80px;
     height: 80px;
     border: 3px solid var(--color-accent);
     border-radius: var(--radius-lg);
     z-index: 2;
+    background: transparent;
 }
 
 .imagePlaceholder {

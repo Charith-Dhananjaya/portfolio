@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect, MouseEvent as ReactMouseEvent } from "react";
+import { useState, TouchEvent } from "react";
 import { Project } from "@/data/projects";
 import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
 import styles from "./ProjectCarousel.module.css";
@@ -11,115 +11,164 @@ interface ProjectCarouselProps {
 }
 
 export default function ProjectCarousel({ projects, onCardClick }: ProjectCarouselProps) {
-    const scrollRef = useRef<HTMLDivElement>(null);
     const [activeIndex, setActiveIndex] = useState(0);
-    const [isDragging, setIsDragging] = useState(false);
-    const [startX, setStartX] = useState(0);
-    const [scrollLeft, setScrollLeft] = useState(0);
+    const [touchStart, setTouchStart] = useState<number | null>(null);
+    const length = projects.length;
 
-    // Detect centered card using Intersection Observer
-    useEffect(() => {
-        const container = scrollRef.current;
-        if (!container) return;
+    // Navigation functions
+    const nextSlide = () => {
+        setActiveIndex((prev) => (prev + 1) % length);
+    };
 
-        const cards = container.querySelectorAll(`.${styles.card}`);
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting && entry.intersectionRatio >= 0.7) {
-                        const index = parseInt(entry.target.getAttribute("data-index") || "0");
-                        setActiveIndex(index);
-                    }
-                });
-            },
-            { root: container, threshold: [0.7], rootMargin: "0px" }
-        );
+    const prevSlide = () => {
+        setActiveIndex((prev) => (prev - 1 + length) % length);
+    };
 
-        cards.forEach((card) => observer.observe(card));
-        return () => observer.disconnect();
-    }, [projects]);
+    // Calculate position and style for each card based on its distance from active
+    const getCardStyle = (index: number): React.CSSProperties => {
+        // Calculate offset from active index
+        let offset = (index - activeIndex + length) % length;
 
-    // Hijack mouse wheel to scroll horizontally
-    useEffect(() => {
-        const container = scrollRef.current;
-        if (!container) return;
+        // Normalize to range -2 to +2 (for 5 cards)
+        if (offset > Math.floor(length / 2)) {
+            offset = offset - length;
+        }
 
-        const handleWheel = (e: WheelEvent) => {
-            if (e.deltaY !== 0) {
-                e.preventDefault();
-                container.scrollLeft += e.deltaY;
-            }
+        // Position calculations based on offset
+        let translateX = 0;
+        let scale = 1;
+        let opacity = 1;
+        let zIndex = 50;
+        let blur = 0;
+        let boxShadow = "0 10px 40px rgba(0, 0, 0, 0.15)";
+        let borderColor = "var(--color-glass-border)";
+
+        switch (offset) {
+            case 0: // Center (active)
+                translateX = 0;
+                scale = 1;
+                opacity = 1;
+                zIndex = 50;
+                blur = 0;
+                // Neon glow effect
+                boxShadow = "0 0 20px rgba(0, 136, 255, 0.4), 0 0 60px rgba(0, 136, 255, 0.2)";
+                borderColor = "rgba(0, 136, 255, 0.6)";
+                break;
+            case 1: // Right adjacent
+                translateX = 45;
+                scale = 0.85;
+                opacity = 0.8;
+                zIndex = 30;
+                blur = 1;
+                break;
+            case -1: // Left adjacent
+                translateX = -45;
+                scale = 0.85;
+                opacity = 0.8;
+                zIndex = 30;
+                blur = 1;
+                break;
+            case 2: // Far right
+                translateX = 85;
+                scale = 0.7;
+                opacity = 0.5;
+                zIndex = 10;
+                blur = 2;
+                break;
+            case -2: // Far left
+                translateX = -85;
+                scale = 0.7;
+                opacity = 0.5;
+                zIndex = 10;
+                blur = 2;
+                break;
+            default: // Hidden
+                translateX = offset > 0 ? 120 : -120;
+                scale = 0.5;
+                opacity = 0;
+                zIndex = 0;
+                blur = 3;
+        }
+
+        return {
+            transform: `translate(calc(-50% + ${translateX}%), -50%) scale(${scale})`,
+            opacity: opacity,
+            zIndex: zIndex,
+            filter: blur > 0 ? `blur(${blur}px)` : 'none',
+            boxShadow: boxShadow,
+            borderColor: borderColor,
+            pointerEvents: offset === 0 ? 'auto' : 'none',
         };
-
-        container.addEventListener("wheel", handleWheel, { passive: false });
-        return () => container.removeEventListener("wheel", handleWheel);
-    }, []);
-
-    // Mouse drag to scroll
-    const handleMouseDown = (e: ReactMouseEvent) => {
-        setIsDragging(true);
-        setStartX(e.pageX - (scrollRef.current?.offsetLeft || 0));
-        setScrollLeft(scrollRef.current?.scrollLeft || 0);
     };
 
-    const handleMouseMove = (e: ReactMouseEvent) => {
-        if (!isDragging || !scrollRef.current) return;
-        e.preventDefault();
-        const x = e.pageX - (scrollRef.current.offsetLeft || 0);
-        const walk = (x - startX) * 2;
-        scrollRef.current.scrollLeft = scrollLeft - walk;
+    // Touch handlers for swipe
+    const handleTouchStart = (e: TouchEvent) => {
+        setTouchStart(e.targetTouches[0].clientX);
     };
 
-    const handleMouseUp = () => {
-        setIsDragging(false);
+    const handleTouchMove = (e: TouchEvent) => {
+        if (!touchStart) return;
+
+        const currentTouch = e.targetTouches[0].clientX;
+        const diff = touchStart - currentTouch;
+
+        if (Math.abs(diff) > 50) {
+            if (diff > 0) {
+                nextSlide();
+            } else {
+                prevSlide();
+            }
+            setTouchStart(null);
+        }
     };
 
-    const handleMouseLeave = () => {
-        setIsDragging(false);
+    const handleTouchEnd = () => {
+        setTouchStart(null);
     };
 
-    // Arrow navigation
-    const scrollTo = (direction: "left" | "right") => {
-        if (!scrollRef.current) return;
-        const cardWidth = scrollRef.current.querySelector(`.${styles.card}`)?.clientWidth || 400;
-        const scrollAmount = cardWidth + 24; // card width + gap
-        const newScrollLeft =
-            direction === "left"
-                ? scrollRef.current.scrollLeft - scrollAmount
-                : scrollRef.current.scrollLeft + scrollAmount;
+    // Handle card clicks
+    const handleCardClick = (project: Project, index: number) => {
+        let offset = (index - activeIndex + length) % length;
+        if (offset > Math.floor(length / 2)) {
+            offset = offset - length;
+        }
 
-        scrollRef.current.scrollTo({ left: newScrollLeft, behavior: "smooth" });
+        if (offset === 0) {
+            // Active card - open modal
+            onCardClick(project);
+        } else if (offset > 0) {
+            // Right side - go next
+            nextSlide();
+        } else {
+            // Left side - go prev
+            prevSlide();
+        }
     };
 
     return (
         <div className={styles.carouselWrapper}>
-            {/* Left arrow */}
+            {/* Left Arrow */}
             <button
                 className={`${styles.arrow} ${styles.arrowLeft}`}
-                onClick={() => scrollTo("left")}
+                onClick={prevSlide}
                 aria-label="Previous project"
             >
                 <HiChevronLeft />
             </button>
 
-            {/* Scrollable container */}
+            {/* Track Container */}
             <div
-                ref={scrollRef}
                 className={styles.carouselTrack}
-                onMouseDown={handleMouseDown}
-                onMouseMove={handleMouseMove}
-                onMouseUp={handleMouseUp}
-                onMouseLeave={handleMouseLeave}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
             >
                 {projects.map((project, idx) => (
                     <div
                         key={project.id}
-                        data-index={idx}
-                        className={`${styles.card} ${idx === activeIndex ? styles.active : ""}`}
-                        onClick={() => !isDragging && onCardClick(project)}
-                        role="button"
-                        tabIndex={0}
-                        onKeyDown={(e) => e.key === "Enter" && onCardClick(project)}
+                        className={styles.card}
+                        style={getCardStyle(idx)}
+                        onClick={() => handleCardClick(project, idx)}
                     >
                         {/* Image area */}
                         <div className={styles.imageArea}>
@@ -131,7 +180,7 @@ export default function ProjectCarousel({ projects, onCardClick }: ProjectCarous
                             <h3 className={styles.cardTitle}>{project.title}</h3>
                             <p className={styles.cardDesc}>{project.description}</p>
 
-                            {/* Tech stack badges */}
+                            {/* Tech stack */}
                             <div className={styles.techStack}>
                                 {project.techStack.slice(0, 4).map((tech) => (
                                     <span key={tech} className={styles.techBadge}>
@@ -145,35 +194,30 @@ export default function ProjectCarousel({ projects, onCardClick }: ProjectCarous
                                 )}
                             </div>
 
-                            <button className={styles.viewMore}>View Details →</button>
+                            <button className={styles.viewMore}>
+                                {idx === activeIndex ? "View Details →" : "Click to View"}
+                            </button>
                         </div>
                     </div>
                 ))}
             </div>
 
-            {/* Right arrow */}
+            {/* Right Arrow */}
             <button
                 className={`${styles.arrow} ${styles.arrowRight}`}
-                onClick={() => scrollTo("right")}
+                onClick={nextSlide}
                 aria-label="Next project"
             >
                 <HiChevronRight />
             </button>
 
-            {/* Dot indicators */}
+            {/* Dot Indicators */}
             <div className={styles.indicators}>
                 {projects.map((_, idx) => (
                     <button
                         key={idx}
                         className={`${styles.dot} ${idx === activeIndex ? styles.dotActive : ""}`}
-                        onClick={() => {
-                            const container = scrollRef.current;
-                            if (!container) return;
-                            const card = container.querySelector(`[data-index="${idx}"]`);
-                            if (card) {
-                                card.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
-                            }
-                        }}
+                        onClick={() => setActiveIndex(idx)}
                         aria-label={`Go to project ${idx + 1}`}
                     />
                 ))}

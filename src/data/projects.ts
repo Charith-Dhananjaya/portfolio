@@ -96,4 +96,60 @@ export const projectsData: Project[] = [
         liveUrl: "",
         image: "/images/project-ecommerce.jpg",
     },
+    {
+        id: 4,
+        title: "Real-Time Chat Application",
+        description:
+            "A high-concurrency chat solution supporting 10k+ concurrent users with WebSockets.",
+        problem:
+            "Existing polling-based chat solutions were high-latency and server-intensive.",
+        solution:
+            "Implemented a WebSocket-based architecture with Redis Pub/Sub for horizontal scaling across multiple server nodes.",
+        keyFeatures: [
+            "Real-time messaging",
+            "Group chat & channels",
+            "Message persistence",
+            "Online status indicators",
+            "File sharing support",
+        ],
+        techStack: [
+            "Node.js",
+            "Socket.io",
+            "Redis",
+            "React",
+            "Cassandra",
+            "Docker",
+        ],
+        githubUrl: "https://github.com/charithdm/chat-app",
+        liveUrl: "",
+        image: "/images/project-chat.jpg",
+    },
+    {
+        id: 5,
+        title: "Finance Tracker & Budgeting Tool",
+        description:
+            "Personal finance management tool with bank sync and visualized spending reports.",
+        problem:
+            "Users found it difficult to track expenses across multiple accounts manually.",
+        solution:
+            "Created a secure aggregator using Plaid API to fetch transactions and categorize them automatically with ML.",
+        keyFeatures: [
+            "Bank account synchronization",
+            "Auto-categorization of expenses",
+            "Budget goal setting",
+            "Recurring bill alerts",
+            "Monthly financial reports",
+        ],
+        techStack: [
+            "Next.js",
+            "TypeScript",
+            "PostgreSQL",
+            "Prisma",
+            "Plaid API",
+            "Tailwind CSS",
+        ],
+        githubUrl: "https://github.com/charithdm/finance-tracker",
+        liveUrl: "",
+        image: "/images/project-finance.jpg",
+    },
 ];
