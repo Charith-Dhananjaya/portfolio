@@ -34,7 +34,7 @@ export default function Button({
                 target={target}
                 rel={target === "_blank" ? "noopener noreferrer" : undefined}
             >
-                {children}
+                <span style={{ position: "relative", zIndex: 1 }}>{children}</span>
             </a>
         );
     }
@@ -46,7 +46,7 @@ export default function Button({
             onClick={onClick}
             aria-label={ariaLabel}
         >
-            {children}
+            <span style={{ position: "relative", zIndex: 1 }}>{children}</span>
         </button>
     );
 }

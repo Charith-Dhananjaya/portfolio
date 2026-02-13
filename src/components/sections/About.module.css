@@ -13,32 +13,169 @@
 .imageCol {
     display: flex;
     justify-content: center;
+    position: relative;
+    /* Ensure the column allows the decoration to be seen */
+    z-index: 1;
 }
 
-.imageWrapper {
+/* New container to hold both image and decoration */
+.imageContainer {
     position: relative;
     width: 380px;
     height: 520px;
-    background: linear-gradient(135deg, rgba(200, 210, 235, 0.2), rgba(235, 210, 230, 0.2));
-    border-radius: var(--radius-xl);
-    padding: 24px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     margin-left: -80px;
     margin-top: -60px;
 }
 
-.imageWrapper::before {
-    content: "";
+.imageWrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(200, 210, 235, 0.2), rgba(235, 210, 230, 0.2));
+    border-radius: var(--radius-xl);
+    padding: 24px;
+    box-shadow: none;
+    overflow: hidden;
+    /* Keeps snake animation inside */
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    z-index: 5;
+    /* Above decoration */
+}
+
+/* Decorative Blue Box (Moved from pseudo-element to separate div) */
+.decorativeBox {
     position: absolute;
-    top: -40px;
-    right: -40px;
+    top: -30px;
+    right: -30px;
     width: 80px;
     height: 80px;
     border: 3px solid var(--color-accent);
     border-radius: var(--radius-lg);
-    z-index: 2;
+    z-index: 0;
+    /* Behind image */
     background: transparent;
+    transition: all 0.4s;
 }
+
+.imageContainer:hover .decorativeBox {
+    transform: translate(10px, -10px);
+    border-color: var(--color-accent-hover);
+}
+
+.imageWrapper:hover {
+    transform: scale(1.02);
+}
+
+/* Snake Border Animation Lines */
+.line1,
+.line2,
+.line3,
+.line4 {
+    position: absolute;
+    display: block;
+    background: var(--color-accent);
+    box-shadow: 0 0 10px var(--color-accent), 0 0 20px var(--color-accent);
+    opacity: 0;
+    transition: opacity 0.2s;
+    z-index: 10;
+}
+
+.imageWrapper:hover .line1,
+.imageWrapper:hover .line2,
+.imageWrapper:hover .line3,
+.imageWrapper:hover .line4 {
+    opacity: 1;
+}
+
+/* Top Line */
+.line1 {
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, var(--color-accent));
+    animation: btn-anim1 1.5s linear infinite;
+}
+
+@keyframes btn-anim1 {
+    0% {
+        left: -100%;
+    }
+
+    50%,
+    100% {
+        left: 100%;
+    }
+}
+
+/* Right Line */
+.line2 {
+    top: -100%;
+    right: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, transparent, var(--color-accent));
+    animation: btn-anim2 1.5s linear infinite;
+    animation-delay: 0.375s;
+}
+
+@keyframes btn-anim2 {
+    0% {
+        top: -100%;
+    }
+
+    50%,
+    100% {
+        top: 100%;
+    }
+}
+
+/* Bottom Line */
+.line3 {
+    bottom: 0;
+    right: -100%;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(270deg, transparent, var(--color-accent));
+    animation: btn-anim3 1.5s linear infinite;
+    animation-delay: 0.75s;
+}
+
+@keyframes btn-anim3 {
+    0% {
+        right: -100%;
+    }
+
+    50%,
+    100% {
+        right: 100%;
+    }
+}
+
+/* Left Line */
+.line4 {
+    bottom: -100%;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(360deg, transparent, var(--color-accent));
+    animation: btn-anim4 1.5s linear infinite;
+    animation-delay: 1.125s;
+}
+
+@keyframes btn-anim4 {
+    0% {
+        bottom: -100%;
+    }
+
+    50%,
+    100% {
+        bottom: 100%;
+    }
+}
+
+/* Pseudo-element removed */
+
 
 .imagePlaceholder {
     width: 100%;

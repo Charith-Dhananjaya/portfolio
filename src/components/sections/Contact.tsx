@@ -87,6 +87,11 @@ export default function Contact() {
                     {/* Right — form */}
                     <AnimateOnScroll variant="slide-left">
                         <div className={styles.formCol}>
+                            <span className={styles.line1}></span>
+                            <span className={styles.line2}></span>
+                            <span className={styles.line3}></span>
+                            <span className={styles.line4}></span>
+
                             {submitted ? (
                                 <div style={{ textAlign: "center", padding: "40px 0" }}>
                                     <p
@@ -156,7 +161,7 @@ export default function Contact() {
                         </div>
                     </AnimateOnScroll>
                 </div>
-            </div>
-        </section>
+            </div >
+        </section >
     );
 }
