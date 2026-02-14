@@ -13,11 +13,8 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
     const [theme, setTheme] = useState<Theme>("light");
-    const [mounted, setMounted] = useState(false);
-
     // Load theme from localStorage on mount
     useEffect(() => {
-        setMounted(true);
         const savedTheme = localStorage.getItem("portfolio-theme") as Theme;
         if (savedTheme) {
             setTheme(savedTheme);

@@ -34,7 +34,7 @@
 }
 
 .primary::before {
-    background: linear-gradient(135deg, #7f78ff, #33ddff);
+    background: linear-gradient(135deg, #50aace, #33ddff);
 }
 
 .primary:hover {
