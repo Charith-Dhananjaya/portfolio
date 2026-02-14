@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, TouchEvent } from "react";
+import React, { useState, TouchEvent } from "react";
 import { Project } from "@/data/projects";
 import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
 import styles from "./ProjectCarousel.module.css";
@@ -10,7 +10,7 @@ interface ProjectCarouselProps {
     onCardClick: (project: Project) => void;
 }
 
-export default function ProjectCarousel({ projects, onCardClick }: ProjectCarouselProps) {
+const ProjectCarousel = ({ projects, onCardClick }: ProjectCarouselProps) => {
     const [activeIndex, setActiveIndex] = useState(0);
     const [touchStart, setTouchStart] = useState<number | null>(null);
     const length = projects.length;
@@ -225,3 +225,5 @@ export default function ProjectCarousel({ projects, onCardClick }: ProjectCarous
         </div>
     );
 }
+
+export default React.memo(ProjectCarousel);

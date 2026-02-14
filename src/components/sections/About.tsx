@@ -24,7 +24,7 @@ export default function About() {
                                     <span className={styles.line3}></span>
                                     <span className={styles.line4}></span>
                                     <Image
-                                        src="/profile.jpg"
+                                        src="/profile.webp"
                                         alt="Charith Dhananjaya De Mel"
                                         fill
                                         className={styles.profileImg}
